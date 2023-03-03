@@ -15,7 +15,11 @@ namespace StarterAssets
         public int maxHealth = 100;
         public int currentHealth;
 
-        public HealthBar healthBar;
+        public int maxStamina = 100;
+        public int currentStamina;
+
+        public MeterBar healthBar;
+        public MeterBar staminaBar;
 
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
@@ -105,7 +109,10 @@ namespace StarterAssets
         {
 
             currentHealth = maxHealth;
-		    healthBar.SetMaxHealth(maxHealth);
+		    healthBar.SetMaxValue(maxHealth);
+
+            currentStamina = maxStamina;
+		    staminaBar.SetMaxValue(maxStamina);
 
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
@@ -128,15 +135,55 @@ namespace StarterAssets
 
             if (Input.GetKeyDown(KeyCode.K))
             {
-                TakeDamage(20);
+                TakeDamage(4, "health");
             }
+
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                HealDamage(20, "health");
+            }
+
         }
 
-        void TakeDamage(int damage)
+        void TakeDamage(int damage, string type)
         {
-            currentHealth -= damage;
+            if (type == "health")
+            {
+                currentHealth -= damage;
+                healthBar.SetValue(currentHealth);
+            }
 
-            healthBar.SetHealth(currentHealth);
+            else if (type == "stamina")
+            {
+                currentStamina -= damage;
+                staminaBar.SetValue(currentStamina);
+            }
+
+            else
+            {
+                Debug.Log("Unknown type of bar");
+            }
+
+        }
+
+        void HealDamage(int damage, string type)
+        {
+            if (type == "health")
+            {
+                currentHealth += damage;
+                healthBar.SetValue(currentHealth);
+            }
+
+            else if (type == "stamina")
+            {
+                currentStamina += damage;
+                staminaBar.SetValue(currentStamina);
+            }
+
+            else
+            {
+                Debug.Log("Unknown type of bar");
+            }
         }
 
         private void LateUpdate()
