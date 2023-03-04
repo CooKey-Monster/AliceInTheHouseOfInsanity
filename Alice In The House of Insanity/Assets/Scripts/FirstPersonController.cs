@@ -12,13 +12,13 @@ namespace StarterAssets
     public class FirstPersonController : MonoBehaviour
     {
 
-        public int maxHealth = 100;
-        public int currentHealth;
+        public float maxSanity = 100f;
+        public float currentSanity;
 
-        public int maxStamina = 100;
-        public int currentStamina;
+        public float maxStamina = 100f;
+        public float currentStamina;
 
-        public MeterBar healthBar;
+        public MeterBar SanityBar;
         public MeterBar staminaBar;
 
         [Header("Player")]
@@ -108,8 +108,8 @@ namespace StarterAssets
         private void Start()
         {
 
-            currentHealth = maxHealth;
-		    healthBar.SetMaxValue(maxHealth);
+            currentSanity = maxSanity;
+		    SanityBar.SetMaxValue(maxSanity);
 
             currentStamina = maxStamina;
 		    staminaBar.SetMaxValue(maxStamina);
@@ -135,22 +135,22 @@ namespace StarterAssets
 
             if (Input.GetKeyDown(KeyCode.K))
             {
-                TakeDamage(4, "health");
+                TakeDamage(4f, "Sanity");
             }
 
             if (Input.GetKeyDown(KeyCode.H))
             {
-                HealDamage(20, "health");
+                HealDamage(20f, "Sanity");
             }
 
         }
 
-        void TakeDamage(int damage, string type)
+        void TakeDamage(float damage, string type)
         {
-            if (type == "health")
+            if (type == "Sanity")
             {
-                currentHealth -= damage;
-                healthBar.SetValue(currentHealth);
+                currentSanity -= damage;
+                SanityBar.SetValue(currentSanity);
             }
 
             else if (type == "stamina")
@@ -166,12 +166,12 @@ namespace StarterAssets
 
         }
 
-        void HealDamage(int damage, string type)
+        void HealDamage(float damage, string type)
         {
-            if (type == "health")
+            if (type == "Sanity")
             {
-                currentHealth += damage;
-                healthBar.SetValue(currentHealth);
+                currentSanity += damage;
+                SanityBar.SetValue(currentSanity);
             }
 
             else if (type == "stamina")
@@ -224,6 +224,34 @@ namespace StarterAssets
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+
+            if (targetSpeed == SprintSpeed) 
+            {
+                if (staminaBar.slider.value == 0)
+                {
+                    targetSpeed = MoveSpeed;
+                }
+
+                else
+                {
+                    TakeDamage(0.8f, "stamina");
+                }
+            }
+
+            else if (targetSpeed == MoveSpeed)
+            {
+                if (staminaBar.slider.value != maxStamina)
+                {
+                    HealDamage(1f, "stamina");
+                }
+
+                else {}
+            }
+
+            else
+            {
+                Debug.Log("Speed not recognized");
+            }
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
